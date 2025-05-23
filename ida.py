@@ -6,8 +6,8 @@ cube = solvedCube
 
 def scrambleCube():
     global cube
-    for a in range(20):
-        r = random.randint(0,5)
+    for _ in range(20):
+        r = random.randint(0,17)
         cube = RRCL.rotateSide(cube, r)
 
 edgeMap = {

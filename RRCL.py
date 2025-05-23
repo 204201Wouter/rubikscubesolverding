@@ -351,7 +351,7 @@ def rotateSide(colors, rotation):
                 ]
     '''
         
-    if rotation == 0: # white
+    if rotation % 6 == 0: # white
 
         side = [
             None,33, 34, 35, None,
@@ -361,7 +361,7 @@ def rotateSide(colors, rotation):
             None,18, 19, 20, None  
                 ]
         
-    if rotation == 1: # yellow
+    if rotation % 6 == 1: # yellow
         side = [
             None,2*9+6, 2*9+7, 2*9+8, None,
             5*9+8,  9, 10, 11, 4*9+6,
@@ -372,7 +372,7 @@ def rotateSide(colors, rotation):
         
     # working until this
         
-    if rotation == 2: # green
+    if rotation % 6 == 2: # green
         side = [
             None,6, 7, 8, None,
             47,  18, 19, 20, 36,
@@ -381,7 +381,7 @@ def rotateSide(colors, rotation):
             None,9, 10, 11, None  
                 ]
         
-    if rotation == 3: # blue
+    if rotation % 6 == 3: # blue
         side = [
             None,15, 16, 17, None,
             51,  27, 28, 29, 44,
@@ -390,7 +390,7 @@ def rotateSide(colors, rotation):
             None,0, 1, 2, None  
                 ]
         
-    if rotation == 4: # red
+    if rotation % 6 == 4: # red
         side = [
             None,8, 5, 2, None,
             20,  36, 37, 38, 35,
@@ -399,7 +399,7 @@ def rotateSide(colors, rotation):
             None,11, 14, 17, None  
                 ]
 
-    if rotation == 5: # orange
+    if rotation % 6 == 5: # orange
         side = [
             None,0, 3, 6, None,
             33,  45, 46, 47, 18,
@@ -412,8 +412,10 @@ def rotateSide(colors, rotation):
     
     cSide = side.copy()
     cSide = np.array(cSide).reshape((5, 5))
-    cSide = np.rot90(cSide).flatten()
-    cSide = cSide.tolist()
+    for _ in range((rotation // 6) + 1):
+        cSide = np.rot90(cSide)
+    
+    cSide = cSide.flatten().tolist()
     cColors = colors.copy()
     for cell, cCell in zip(side,cSide):
         if cell != None:
