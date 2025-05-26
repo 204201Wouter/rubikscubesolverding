@@ -36,7 +36,7 @@ cornerMap = {
         ("yellow", "blue", "orange") : [15, 27, 51]
 }
 
-def colorsToPieces(colors):
+def colorsToPieces(colors): # convert colors to pieces
     edges = {}
     for key, value in edgeMap.items():
         edges[key] = [colors[value[0]], colors[value[1]]]
@@ -76,12 +76,38 @@ def getNeighbors(colors):
     
     return neigbors
 
-def hCost(pieces):
-    edges = pieces[0]
-    corners = pieces[1]
-    return 0
+
+
+# ((0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0))
+# index in lijst is welke hoek
+# eerste waarde item positie
+# tweede waarde orientatie 0 is normale kant boven dus tegen klok in gedraait is + 1
+'''
+cornerMap = {
+    tuple(sorted(("white", "green", "red"))) : 0,
+    tuple(sorted(("white", "green", "orange"))) : 3,
+    tuple(sorted(("white", "blue", "red"))) : 1,
+    tuple(sorted(("white", "blue", "orange"))) : 2,
+    tuple(sorted(("yellow", "green", "red"))) : 5,
+    tuple(sorted(("yellow", "green", "orange"))) : 4,
+    tuple(sorted(("yellow", "blue", "red"))) : 6,
+    tuple(sorted(("yellow", "blue", "orange"))) : 7
+}
+
+'''
+def hCost(cube, pdb):
+   # krijg hwaarde uit pdb
+    if cube in pdb:
+        return pdb[cube]
+    else:
+        return 20
 
 def AStar(colorsList):
+
+    with open("sample.json") as outfile:
+        pdb = outfile.read()
+        
+
     colors = tuple(colorsList)
 
     openSet = []
@@ -91,7 +117,7 @@ def AStar(colorsList):
 
     openSet.append(colors)
     gScores[colors] = 0
-    fScores[colors] = hCost(colorsToPieces(list(colors)))
+    fScores[colors] = hCost(colorsToPieces(colors), pdb)
     
     while len(openSet) > 0:
         bestCube = tuple(solvedCube)

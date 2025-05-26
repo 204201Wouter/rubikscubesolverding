@@ -1,5 +1,6 @@
 from collections import deque
 
+
 class Corners:
     def __init__(self, corners=None):
         if corners != None:
@@ -36,14 +37,14 @@ class Corners:
         self.corners = newCorners
     
 cornerMap = {
-    sorted(("white", "green", "red")) : 0,
-    sorted(("white", "green", "orange")) : 3,
-    sorted(("white", "blue", "red")) : 1,
-    sorted(("white", "blue", "orange")) : 2,
-    sorted(("yellow", "green", "red")) : 5,
-    sorted(("yellow", "green", "orange")) : 4,
-    sorted(("yellow", "blue", "red")) : 6,
-    sorted(("yellow", "blue", "orange")) : 7
+    tuple(sorted(("white", "green", "red"))) : 0,
+    tuple(sorted(("white", "green", "orange"))) : 3,
+    tuple(sorted(("white", "blue", "red"))) : 1,
+    tuple(sorted(("white", "blue", "orange"))) : 2,
+    tuple(sorted(("yellow", "green", "red"))) : 5,
+    tuple(sorted(("yellow", "green", "orange"))) : 4,
+    tuple(sorted(("yellow", "blue", "red"))) : 6,
+    tuple(sorted(("yellow", "blue", "orange"))) : 7
 }
 
 def piecesToNumbers(corners):
@@ -64,10 +65,14 @@ def generateCornersPDB():
         cube, depth = queue.popleft()
         key = tuple(cube.corners)
 
-        if key in visited or depth > 7:
+        if key in visited or depth > 11:
             continue
 
         visited[key] = depth
+
+        if len(visited) % 1000 == 0:
+            print(len(visited))
+
 
         for move in ['U', 'R', 'F']:
             for x in range(1, 4):  # 90, 180, 270 degree turns
@@ -76,8 +81,16 @@ def generateCornersPDB():
                     nextCube.rotateSide(move)
                 queue.append((nextCube, depth + 1))
 
+
+
     return visited
 
 pdb = generateCornersPDB()
+
+print(pdb)
+
+with open("data.txt", "w") as outfile:
+    outfile.write(str(pdb))
+
 print(len(pdb))
 #print(pdb)
