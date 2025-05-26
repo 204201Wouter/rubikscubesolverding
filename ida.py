@@ -2,6 +2,8 @@ import RRCL
 import random
 
 solvedCube = ['white', 'white', 'white', 'white', 'white', 'white', 'white', 'white', 'white', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange']
+
+
 cube = solvedCube
 
 def scrambleCube():
@@ -37,6 +39,10 @@ cornerMap = {
 }
 
 def colorsToPieces(colors): # convert colors to pieces
+    cMap = cornerMap("white", "green", "red")
+    cornerWGR = tuple(sorted(colors[cMap[0]],colors[cMap[1]],colors[cMap[2]]))
+
+
     edges = {}
     for key, value in edgeMap.items():
         edges[key] = [colors[value[0]], colors[value[1]]]
@@ -78,25 +84,9 @@ def getNeighbors(colors):
 
 
 
-# ((0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0))
-# index in lijst is welke hoek
-# eerste waarde item positie
-# tweede waarde orientatie 0 is normale kant boven dus tegen klok in gedraait is + 1
-'''
-cornerMap = {
-    tuple(sorted(("white", "green", "red"))) : 0,
-    tuple(sorted(("white", "green", "orange"))) : 3,
-    tuple(sorted(("white", "blue", "red"))) : 1,
-    tuple(sorted(("white", "blue", "orange"))) : 2,
-    tuple(sorted(("yellow", "green", "red"))) : 5,
-    tuple(sorted(("yellow", "green", "orange"))) : 4,
-    tuple(sorted(("yellow", "blue", "red"))) : 6,
-    tuple(sorted(("yellow", "blue", "orange"))) : 7
-}
-
-'''
 def hCost(cube, pdb):
    # krijg hwaarde uit pdb
+    cube = tuple(cube)
     if cube in pdb:
         return pdb[cube]
     else:
@@ -104,8 +94,8 @@ def hCost(cube, pdb):
 
 def AStar(colorsList):
 
-    with open("sample.json") as outfile:
-        pdb = outfile.read()
+    with open("pdb.txt") as outfile:
+        pdb = eval(outfile.read())
         
 
     colors = tuple(colorsList)
@@ -117,13 +107,13 @@ def AStar(colorsList):
 
     openSet.append(colors)
     gScores[colors] = 0
-    fScores[colors] = hCost(colorsToPieces(colors), pdb)
+    fScores[colors] = hCost(colors, pdb)
     
     while len(openSet) > 0:
         bestCube = tuple(solvedCube)
         bestScore = float('inf')
         for cube in openSet:
-            if fScores[cube] < bestScore:
+            if fScores[tuple(cube)] < bestScore:
                 bestCube = cube
                 bestScore = fScores[cube]
         
@@ -142,13 +132,17 @@ def AStar(colorsList):
         neigbors = getNeighbors(list(bestCube))
         for neighbor in neigbors:
             tentGScore = gScores[bestCube] + 1
+            neighbor[0] = tuple(neighbor[0])
             if not neighbor[0] in gScores or tentGScore < gScores[neighbor[0]]:
                 turnUsed[neighbor[0]] = neighbor
                 gScores[neighbor[0]] = tentGScore
-                fScores[neighbor[0]] = tentGScore + hCost(colorsToPieces(list(neighbor[0])))
+                fScores[neighbor[0]] = tentGScore + hCost(neighbor[0],pdb)
                 if not neighbor[0] in openSet:
                     openSet.append(neighbor)
     
     print("mislukt")
     return []
+
+
+AStar(tuple(cube))
 

@@ -349,7 +349,8 @@ def rotateSide(colors, rotation):
             edgePieces[rotation+6],  rotation+6, rotation+7, rotation+8, edgePieces[rotation+8],
             None,edgePieces[rotation+6], edgePieces[rotation+7], edgePieces[rotation+8], None  
                 ]
-    '''
+    ''' 
+
         
     if rotation % 6 == 0: # white
 
@@ -427,4 +428,80 @@ def rotateSide(colors, rotation):
     return colors
 
 
+
+def rotateSide2x2(colors, rotation):
+
+    
+
+        
+    if rotation % 6 == 0: # white
+
+        side = [
+            None ,14, 15, None,
+            20,  0, 1, 17,
+            21,  2, 3, 16,
+            None,8, 9, None  
+                ]
+        
+        
+    if rotation % 6 == 1: # green
+        side = [
+            None ,10, 11, None,
+            23,  4, 5, 18,
+            22,  6, 7, 19,
+            None,12, 13, None  
+                ]
+        
+    if rotation % 6 == 2: # blue
+        side = [
+            None ,2, 3, None,
+            21,  8, 9, 16,
+            23,  10, 11, 18,
+            None,4, 5, None  
+                ]
+        
+    if rotation % 6 == 3: # red
+        side = [
+            None ,6, 7, None,
+            22,  12, 13, 19,
+            20,  14, 15, 17,
+            None,0, 1, None  
+                ]
+
+    if rotation % 6 == 4: # orange
+        side = [
+            None ,3, 1, None,
+            9,  16, 17, 15,
+            11,  18, 19, 13,
+            None,5, 7, None  
+                ]
+
+    if rotation % 6 == 5: # orange
+        side = [
+            None ,0, 2, None,
+            14,  20, 21, 8,
+            12,  22, 23, 10,
+            None,6, 4, None  
+                ]    
+        
+    
+    cSide = side.copy()
+    cSide = np.array(cSide).reshape((4, 4))
+    for _ in range((rotation // 6) + 1):
+        cSide = np.rot90(cSide)
+
+        
+    
+    cSide = cSide.flatten().tolist()
+    cColors = colors.copy()
+
+    for cell, cCell in zip(side,cSide):
+        if cell != None:
+  
+            colors[cell] = cColors[cCell]
+
+
+
+
+    return colors
 
