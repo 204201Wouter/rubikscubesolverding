@@ -1,13 +1,17 @@
 import RRCL
 from random import randint
-with open("pdb.txt") as outfile:
-    pdb = eval(outfile.read())
-    #pdb = outfile.read()
+
+import pickle
+
+# Load from the pickle file
+with open("pdb.pkl", "rb") as f:
+    pdb = pickle.load(f)
+
 print('loaded')
 
 cube = ['white', 'white', 'white', 'white', 'white', 'white', 'white', 'white', 'white', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange']
 
-for x in range(2):
+for x in range(3):
     cube = RRCL.rotateSide(cube, randint(0,5))
 
 
