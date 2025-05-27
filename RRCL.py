@@ -338,94 +338,80 @@ edgePieces = {
 
 }
 
+
+
 def rotateSide(colors, rotation):
-
-    
-    '''
-    side = [
-            None,edgePieces[rotation+0], edgePieces[rotation+1], edgePieces[rotation+2], None,
-            edgePieces[rotation+0],  rotation+0, rotation+1, rotation+2, edgePieces[rotation+2],
-            edgePieces[rotation+3],  rotation+3, rotation+4, rotation+5, edgePieces[rotation+5],
-            edgePieces[rotation+6],  rotation+6, rotation+7, rotation+8, edgePieces[rotation+8],
-            None,edgePieces[rotation+6], edgePieces[rotation+7], edgePieces[rotation+8], None  
-                ]
-    ''' 
-
-        
-    if rotation % 6 == 0: # white
-
-        side = [
+    sides = [
+        # white
+        [
             None,33, 34, 35, None,
             45,  0, 1, 2, 38,
             46,  3, 4, 5, 37,
             47,  6, 7, 8, 36,
             None,18, 19, 20, None  
-                ]
-        
-    if rotation % 6 == 1: # yellow
-        side = [
-            None,2*9+6, 2*9+7, 2*9+8, None,
-            5*9+8,  9, 10, 11, 4*9+6,
-            5*9+7,  12, 13, 14, 4*9+7,
-            5*9+6,  15, 16, 17, 4*9+8,
-            None,3*9+0, 3*9+1, 3*9+2, None  
-                ]
-        
-    # working until this
-        
-    if rotation % 6 == 2: # green
-        side = [
+        ],
+        # yellow
+        [
+            None,24,25,26,None,
+            53,  9,10,11,42,
+            52, 12,13,14,43,
+            51, 15,16,17,44,
+            None,27,28,29,None  
+        ],
+        # green
+        [
             None,6, 7, 8, None,
-            47,  18, 19, 20, 36,
-            50,  21, 22, 23, 39,
-            53,  24, 25, 26, 42,
-            None,9, 10, 11, None  
-                ]
-        
-    if rotation % 6 == 3: # blue
-        side = [
-            None,15, 16, 17, None,
-            51,  27, 28, 29, 44,
-            48,  30, 31, 32, 41,
-            45,  33, 34, 35, 38,
-            None,0, 1, 2, None  
-                ]
-        
-    if rotation % 6 == 4: # red
-        side = [
-            None,8, 5, 2, None,
-            20,  36, 37, 38, 35,
-            23,  39, 40, 41, 32,
-            26,  42, 43, 44, 29,
-            None,11, 14, 17, None  
-                ]
+            47,18,19,20,36,
+            50,21,22,23,39,
+            53,24,25,26,42,
+            None,9,10,11,None  
+        ],
+        # blue
+        [
+            None,15,16,17,None,
+            51,27,28,29,44,
+            48,30,31,32,41,
+            45,33,34,35,38,
+            None,0,1,2,None  
+        ],
+        # red
+        [
+            None,8,5,2,None,
+            20,36,37,38,35,
+            23,39,40,41,32,
+            26,42,43,44,29,
+            None,11,14,17,None  
+        ],
+        # orange
+        [
+            None,0,3,6,None,
+            33,45,46,47,18,
+            30,48,49,50,21,
+            27,51,52,53,24,
+            None,15,12,9,None  
+        ]
+    ]
 
-    if rotation % 6 == 5: # orange
-        side = [
-            None,0, 3, 6, None,
-            33,  45, 46, 47, 18,
-            30,  48, 49, 50, 21,
-            27,  51, 52, 53, 24,
-            None,15, 12, 9, None  
-                ]
-        
-        
-    
-    cSide = side.copy()
-    cSide = np.array(cSide).reshape((5, 5))
-    for _ in range((rotation // 6) + 1):
-        cSide = np.rot90(cSide)
-    
-    cSide = cSide.flatten().tolist()
-    cColors = colors.copy()
-    for cell, cCell in zip(side,cSide):
-        if cell != None:
-            colors[cell] = cColors[cCell]
+    def rotate_5x5_matrix(mat, times=1):
+        """Rotate flat 5x5 matrix 90° clockwise `times` times"""
+        grid = [mat[i*5:(i+1)*5] for i in range(5)]
+        for _ in range(times):
+            grid = [list(row) for row in zip(*grid[::-1])]
+        return [cell for row in grid for cell in row]
 
+    idx = rotation % 6
+    num_rotations = (rotation // 6 + 1) % 4
 
+    side = sides[idx]
+    rotated_side = rotate_5x5_matrix(side, num_rotations)
 
+    # Apply the rotation mapping
+    updated_colors = colors.copy()
+    for original, rotated in zip(side, rotated_side):
+        if original is not None and rotated is not None:
+            updated_colors[original] = colors[rotated]
 
-    return colors
+    return updated_colors
 
 
 
