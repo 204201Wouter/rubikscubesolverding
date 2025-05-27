@@ -9,15 +9,16 @@ solved[tuple(colors)] = generation
 
 newGen = [colors]
 
-while generation < 10:
+while generation < 5:
     lastgenList = []
     for item in newGen:
         lastgenList.append(item.copy())
     newGen = []
     generation += 1
     print(generation)
+    print(len(lastgenList))
     for cube in lastgenList:
-        for x in range(6):
+        for x in range(18):
             newCube = RRCL.rotateSide2x2(cube.copy(), x)
             tNewCube = tuple(newCube)
             if tNewCube not in solved:
