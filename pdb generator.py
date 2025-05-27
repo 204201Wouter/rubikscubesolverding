@@ -3,28 +3,31 @@ import pickle
 
 colors = [0,0,0,0, 1,1,1,1, 2,2,2,2, 3,3,3,3, 4,4,4,4, 5,5,5,5]
 
+# BFS initialization
 generation = 0
-solved = {}
-solved[tuple(colors)] = generation
-
+solved = {tuple(colors): generation}
 newGen = [colors]
+i = 0
 
-while generation < 5:
-    lastgenList = []
-    for item in newGen:
-        lastgenList.append(item.copy())
-    newGen = []
+while generation < 8:
+    print(f'Generation: {generation}, New States: {len(newGen)}, Total Solved: {len(solved)}')
+    
+    nextGen = []
     generation += 1
-    print(generation)
-    print(len(lastgenList))
-    for cube in lastgenList:
-        for x in range(18):
-            newCube = RRCL.rotateSide2x2(cube.copy(), x)
-            tNewCube = tuple(newCube)
-            if tNewCube not in solved:
-                solved[tNewCube] = generation
-                newGen.append(newCube)
 
-# Save to a pickle file
+    for cube in newGen:
+        for x in range(18):
+            rotated = RRCL.rotateSide2x2(cube, x)
+            cube_key = tuple(rotated)
+            if cube_key not in solved:
+                i += 1
+                solved[cube_key] = generation
+                nextGen.append(rotated)
+                if i % 10000 == 0:
+                    print(f'{i} new states')
+
+    newGen = nextGen
+
+# Save result
 with open("pdb.pkl", "wb") as f:
     pickle.dump(solved, f)

@@ -433,75 +433,68 @@ def rotateSide2x2(colors, rotation):
 
     
 
-        
-    if rotation % 6 == 0: # white
 
-        side = [
-            None ,14, 15, None,
-            20,  0, 1, 17,
-            21,  2, 3, 16,
-            None,8, 9, None  
-                ]
-        
-        
-    if rotation % 6 == 1: # green
-        side = [
-            None ,10, 11, None,
-            23,  4, 5, 18,
-            22,  6, 7, 19,
-            None,12, 13, None  
-                ]
-        
-    if rotation % 6 == 2: # blue
-        side = [
-            None ,2, 3, None,
-            21,  8, 9, 16,
-            23,  10, 11, 18,
-            None,4, 5, None  
-                ]
-        
-    if rotation % 6 == 3: # red
-        side = [
-            None ,6, 7, None,
-            22,  12, 13, 19,
-            20,  14, 15, 17,
-            None,0, 1, None  
-                ]
+    sides = [
+        # white
+        [
+            None, 14, 15, None,
+            20,   0,  1, 17,
+            21,   2,  3, 16,
+            None, 8,  9, None
+        ],
+        # green
+        [
+            None, 10, 11, None,
+            23,   4,  5, 18,
+            22,   6,  7, 19,
+            None, 12, 13, None
+        ],
+        # blue
+        [
+            None, 2,  3,  None,
+            21,   8,  9,  16,
+            23,   10, 11, 18,
+            None, 4,  5,  None
+        ],
+        # red
+        [
+            None, 6,  7,  None,
+            22,   12, 13, 19,
+            20,   14, 15, 17,
+            None, 0,  1,  None
+        ],
+        # orange (version 1)
+        [
+            None, 3,  1,  None,
+            9,    16, 17, 15,
+            11,   18, 19, 13,
+            None, 5,  7,  None
+        ],
+        # orange (version 2)
+        [
+            None, 0,  2,  None,
+            14,   20, 21, 8,
+            12,   22, 23, 10,
+            None, 6,  4,  None
+        ]
+    ]
 
-    if rotation % 6 == 4: # orange
-        side = [
-            None ,3, 1, None,
-            9,  16, 17, 15,
-            11,  18, 19, 13,
-            None,5, 7, None  
-                ]
+    def rotate_4x4_matrix(mat, times=1):
+        """Rotates a flat 4x4 matrix 90 degrees clockwise 'times' times"""
+        grid = [mat[i*4:(i+1)*4] for i in range(4)]
+        for _ in range(times):
+            grid = [list(row) for row in zip(*grid[::-1])]
+        return [cell for row in grid for cell in row]
 
-    if rotation % 6 == 5: # orange
-        side = [
-            None ,0, 2, None,
-            14,  20, 21, 8,
-            12,  22, 23, 10,
-            None,6, 4, None  
-                ]    
-        
-    
-    cSide = side.copy()
-    cSide = np.array(cSide).reshape((4, 4))
-    for _ in range((rotation // 6) + 1):
-        cSide = np.rot90(cSide)
+    idx = rotation % 6
+    side = sides[idx]
+    num_rotations = (rotation // 6 + 1) % 4
+    rotated_side = rotate_4x4_matrix(side, num_rotations)
 
-        
-    
-    cSide = cSide.flatten().tolist()
-    cColors = colors.copy()
+    # Apply the color mapping
+    updated_colors = colors.copy()
+    for original, rotated in zip(side, rotated_side):
+        if original is not None and rotated is not None:
+            updated_colors[original] = colors[rotated]
 
-    for cell, cCell in zip(side,cSide):
-        if cell != None:
-  
-            colors[cell] = cColors[cCell]
-
-
-
-
-    return colors
-
+    return updated_colors
