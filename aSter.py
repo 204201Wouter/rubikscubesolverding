@@ -144,14 +144,10 @@ cube = solvedCube.copy()
 
 #scrambleCube()
 #'''
-cube = RRCL.rotateSide(cube, random.randint(0,17))
-cube = RRCL.rotateSide(cube, random.randint(0,17))
-cube = RRCL.rotateSide(cube, random.randint(0,17))
-cube = RRCL.rotateSide(cube, random.randint(0,17))
-cube = RRCL.rotateSide(cube, random.randint(0,17))
-cube = RRCL.rotateSide(cube, random.randint(0,17))
-# cube = RRCL.rotateSide(cube, random.randint(0,17))
-# cube = RRCL.rotateSide(cube, random.randint(0,17))
+for x in range(6):
+    cube = RRCL.rotateSide(cube, random.randint(0,17))
+
+
 #'''
 
 print(cube)
