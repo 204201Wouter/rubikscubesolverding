@@ -1,11 +1,9 @@
 import RRCL
 import random
 import pickle
+import pygame
 
-solvedCube = ['white', 'white', 'white', 'white', 'white', 'white', 'white', 'white', 'white', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange']
-solvedCube = [0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,1,1, 2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,3, 4,4,4,4,4,4,4,4,4, 5,5,5,5,5,5,5,5,5]
 
-cube = solvedCube.copy()
 
 def scrambleCube():
     global cube
@@ -78,6 +76,7 @@ def AStar(colorsList):
     while len(openSet) > 0:
 
         cube = lowestFvalue(openSet)
+       # print(openSet[cube]["hCost"])
         
 
         if cube == tuple(solvedCube):
@@ -91,9 +90,10 @@ def AStar(colorsList):
 
             if not neighbour[0] in closedSet:
                 if neighbour[0] in openSet:
+  
                     if neighbour[1]["hCost"]+len(neighbour[1]["turns"]) < openSet[neighbour[0]]["hCost"]+len(openSet[neighbour[0]]["turns"]) :
-                        openSet[neighbour[1]]["hCost"] = neighbour[1]["hCost"]
-                        openSet[neighbour[1]]["turns"] = neighbour[1]["turns"]
+                        openSet[neighbour[0]]["hCost"] = neighbour[1]["hCost"]
+                        openSet[neighbour[0]]["turns"] = neighbour[1]["turns"]
 
 
                 else:
@@ -130,15 +130,32 @@ def AStar(colorsList):
     return discoveredCubes[tuple(solvedCube)]["turns"]
     '''
 
+with open("pdb.pkl", "rb") as f:
+    pdb = pickle.load(f)
+
+print('loaded pdb')
+
+solvedCube = ['white', 'white', 'white', 'white', 'white', 'white', 'white', 'white', 'white', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange']
+solvedCube = [0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,1,1, 2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,3, 4,4,4,4,4,4,4,4,4, 5,5,5,5,5,5,5,5,5]
+
+cube = solvedCube.copy()
+# cube = [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 4, 0, 5, 4, 4, 3, 2, 4, 5, 5, 4, 4, 3, 5, 2, 3, 2, 4, 5, 5, 3, 3, 3, 1, 4, 4, 2, 2, 2, 2, 2, 2, 5, 5, 5, 3, 3, 3]
+
+
 #scrambleCube()
+#'''
 cube = RRCL.rotateSide(cube, random.randint(0,17))
 cube = RRCL.rotateSide(cube, random.randint(0,17))
 cube = RRCL.rotateSide(cube, random.randint(0,17))
 cube = RRCL.rotateSide(cube, random.randint(0,17))
 cube = RRCL.rotateSide(cube, random.randint(0,17))
 cube = RRCL.rotateSide(cube, random.randint(0,17))
+# cube = RRCL.rotateSide(cube, random.randint(0,17))
+# cube = RRCL.rotateSide(cube, random.randint(0,17))
+#'''
 
 print(cube)
+cubeBegin = cube.copy()
 #cube = RRCL.rotateSide(cube, random.randint(0,17))
 
 
@@ -157,10 +174,65 @@ for item in range(len(cube)):
         cube[item] = 5
 
 
-with open("pdb.pkl", "rb") as f:
-    pdb = pickle.load(f)
 
-print('loaded pdb')
 
-print(AStar(cube))
+solved = AStar(cube)
 
+turns = solved["turns"]
+print(turns)
+
+step = 0
+
+
+
+
+
+pygame.init()
+
+
+screen = pygame.display.set_mode((800,600))
+screenSize = screen.get_size()
+
+screenCenter = [screenSize[0]/2, screenSize[1]/2]
+
+colors = cubeBegin
+
+angle = [0,0]
+
+while True:
+    mouse = False
+    for event in pygame.event.get():     
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+            print(colors)
+            exit()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse = True
+
+        if event.type == pygame.KEYDOWN:
+            colors = RRCL.rotateSide(colors, turns[step]) 
+
+            step += 1
+            
+
+                          
+    screen.fill((0,0,0))
+
+
+    
+
+
+
+
+    angle = RRCL.detectRotations(pygame.mouse.get_pressed(), pygame.mouse.get_rel() ,angle)
+
+
+
+
+    colors = RRCL.renderCube(colors, angle, screen, mouse, pygame.mouse.get_pos(), True)
+   
+
+    pygame.display.update()
+
+
+    

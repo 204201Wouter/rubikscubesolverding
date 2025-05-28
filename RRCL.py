@@ -252,8 +252,11 @@ def renderCube(colors, angle, screen, mouse, mousePos, changingColors):
         if type(colors[0]) == str:
 
             pygame.draw.polygon(screen, colors[polygon[0]], polygon[1])
+      #  elif colors[0] == < 9:
+
         else:
-            pygame.draw.polygon(screen, (colors[polygon[0]]%9*30, colors[polygon[0]]%9*30, colors[polygon[0]]%9*30), polygon[1])
+            pygame.draw.polygon(screen, allColors[colors[polygon[0]]], polygon[1])
+           # pygame.draw.polygon(screen, (colors[polygon[0]]%9*30, colors[polygon[0]]%9*30, colors[polygon[0]]%9*30), polygon[1])
 
         if mouse and changingColors:
             if isPointInPolygon(polygon[1], mousePos):
